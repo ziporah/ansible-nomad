@@ -20,6 +20,11 @@ client {
     network_speed = {{ nomad_network_speed }}
     cpu_total_compute = {{ nomad_cpu_total_compute }}
 
+    {% if nomad_cni_config -%}
+    cni_path = "{{ nomad_cni_dir }}"
+    cni_config_dir = "{{ nomad_cni_config_dir }}"
+    {% endif -%}
+
     gc_interval = "{{ nomad_gc_interval }}"
     gc_disk_usage_threshold = {{ nomad_gc_disk_usage_threshold }}
     gc_inode_usage_threshold = {{ nomad_gc_inode_usage_threshold }}

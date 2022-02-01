@@ -7,6 +7,15 @@
     state: directory
     owner: "{{ nomad_user }}"
     group: "{{ nomad_group }}"
+  when: nomad_cni_enable | bool
+
+- name: Create cni config directory
+  file:
+    dest: "{{ nomad_cni_config_dir }}"
+    state: directory
+    owner: "{{ nomad_user }}"
+    group: "{{ nomad_group }}"
+  when: nomad_cni_config | bool
 
 - name: Check CNI package checksum file
   stat:
@@ -16,6 +25,7 @@
   tags: installation
   register: nomad_cni_checksum
   delegate_to: 127.0.0.1
+  when: nomad_cni_enable | bool
 
 - name: Get Nomad CNI package checksum file
   get_url:
@@ -26,6 +36,7 @@
   tags: installation
   when: not nomad_cni_checksum.stat.exists
   delegate_to: 127.0.0.1
+  when: nomad_cni_enable | bool
 
 - name: Get Nomad CNI package checksum
   shell: |
@@ -37,6 +48,7 @@
   register: nomad_cni_sha256
   tags: installation
   delegate_to: 127.0.0.1
+  when: nomad_cni_enable | bool
 
 - name: Check Nomad CNI package file
   stat:
@@ -54,7 +66,9 @@
   become: false
   tags: installation
   delegate_to: 127.0.0.1
-  when: not nomad_cni_package.stat.exists
+  when: 
+    - not nomad_cni_package.stat.exists
+    - nomad_cni_enable | bool
 
 - name: Create Temporary Directory for Extraction
   tempfile:
@@ -64,6 +78,7 @@
   register: install_temp
   tags: installation
   delegate_to: 127.0.0.1
+  when: nomad_cni_enable | bool
 
 - name: Unarchive Nomad CNI
   unarchive:
@@ -73,6 +88,7 @@
   become: false
   tags: installation
   delegate_to: 127.0.0.1
+  when: nomad_cni_enable | bool
 
 - name: Install Nomad CNI
   copy:
@@ -85,6 +101,7 @@
     - "{{ install_temp.path }}/*"
   tags: installation
   notify: restart nomad
+  when: nomad_cni_enable | bool
 
 - name: Cleanup
   file:
@@ -93,3 +110,4 @@
   become: false
   tags: installation
   delegate_to: 127.0.0.1
+  when: nomad_cni_enable | bool

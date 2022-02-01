@@ -207,7 +207,9 @@ nomad_autopilot_server_stabilization_time: "10s"
 
 ### CNI
 nomad_cni_enable: false
+nomad_cni_config: false
 nomad_cni_dir: "/opt/cni/bin"
+nomad_cni_config_dir: "/opt/cni/config"
 nomad_cni_version: "{{ lookup('env','NOMAD_CNI_VERSION') | default('0.9.1', true) }}"
 nomad_cni_pkg: "cni-plugins-linux-{{nomad_architecture}}-v{{ nomad_cni_version }}.tgz"
 nomad_cni_url: "https://github.com/containernetworking/plugins/releases/download/v{{ nomad_cni_version }}"
